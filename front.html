@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: url('background.jpg.jpg');
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+            animation: fadeIn 0.8s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        header {
+            background: linear-gradient(to right, #6a11cb, #0c0c0c);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+        
+        .page-description {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+        
+        nav {
+            display: flex;
+            justify-content: center;
+            background: #f4f9e0;
+            padding: 0;
+            border-bottom: 1px solid #f3f7de;
+        }
+        
+        .nav-btn {
+            padding: 15px 25px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .nav-btn:hover {
+            color: #6a11cb;
+            background: rgba(106, 17, 203, 0.05);
+        }
+        
+        .nav-btn.active {
+            color: #6a11cb;
+        }
+        
+        .nav-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: #6a11cb;
+        }
+        
+        .page {
+            display: none;
+            padding: 30px;
+            min-height: 500px;
+        }
+        
+        .page.active {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        /* Home Page Styles */
+        .welcome-text {
+            color: #6a11cb;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            text-align: center;
+        }
+        
+        .description {
+            color: #555;
+            margin-bottom: 30px;
+            line-height: 1.6;
+            text-align: center;
+        }
+        
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin: 40px 0;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        
+        .feature {
+            padding: 20px;
+            background-color: #eef4db;
+            border-radius: 10px;
+            width: 30%;
+            min-width: 250px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature i {
+            font-size: 2.5rem;
+            color: #6a11cb;
+            margin-bottom: 15px;
+            display: block;
+        }
+        
+        .feature h3 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .feature p {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        .action-btn {
+            background: linear-gradient(to right, #6a11cb, #171718);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: block;
+            margin: 20px auto;
+            box-shadow: 0 4px 15px rgba(106, 17, 203, 0.3);
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(106, 17, 203, 0.4);
+        }
+        
+        /* Weekly Page Styles */
+        .week-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .week-btn {
+            background: #fbfee8;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .week-btn:hover {
+            background: #e0e0e0;
+        }
+        
+        .week-btn.active {
+            background: linear-gradient(to right, #6a11cb, #070808);
+            color: white;
+            box-shadow: 0 4px 10px rgba(106, 17, 203, 0.3);
+        }
+        
+        .day-management {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .day-section {
+            margin-bottom: 25px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .day-title {
+            color: #6a11cb;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 1px solid #f8fbe5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .add-subject-form {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .add-subject-form input {
+            flex: 1;
+            min-width: 200px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        
+        .add-btn {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .add-btn:hover {
+            background: #090909;
+        }
+        
+        .subject-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 10px;
+        }
+        
+        .subject-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            justify-content: space-between;
+        }
+        
+        .subject-info {
+            display: flex;
+            align-items: center;
+        }
+        
+        .subject-item input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+            accent-color: #6a11cb;
+        }
+        
+        .delete-btn {
+            background: #ff4757;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        
+        .attendance-form {
+            background: #f9f9f9;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+        }
+        
+        .result-container {
+            text-align: center;
+            padding: 20px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        .result-container.show {
+            display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        .percentage {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #6a11cb;
+            margin: 10px 0;
+        }
+        
+        /* Monthly Page Styles */
+        .summary {
+            margin-top: 20px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 10px;
+        }
+        
+        .week-summary {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .week-card {
+            flex: 1;
+            min-width: 200px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .week-card h3 {
+            color: #6a11cb;
+            margin-bottom: 10px;
+        }
+        
+        .monthly-result {
+            text-align: center;
+            padding: 30px;
+            background: #f0f9ff;
+            border-radius: 10px;
+            margin-top: 30px;
+        }
+        
+        .info-message {
+            text-align: center;
+            padding: 15px;
+            background: #fff4e5;
+            border-radius: 8px;
+            margin: 15px 0;
+            color: #e67700;
+        }
+        
+        .toggle-day {
+            background: #6a11cb;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+        
+        /* Subject Percentage Styles */
+        .subject-percentage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .subject-percentage-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+        
+        .subject-percentage-card h4 {
+            color: #6a11cb;
+            margin-bottom: 10px;
+        }
+        
+        .subject-percentage {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #0c0d0d;
+            margin: 5px 0;
+        }
+        
+        .subject-stats {
+            font-size: 0.9rem;
+            color: #666;
+        }
+        
+        /* Attendance Page Styles */
+        .attendance-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .attendance-subject {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+        
+        .attendance-subject input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.3);
+            accent-color: #6a11cb;
+        }
+        
+        @media (max-width: 768px) {
+            .features {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .feature {
+                width: 100%;
+            }
+            
+            .week-selector {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .week-btn {
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .add-subject-form {
+                flex-direction: column;
+            }
+            
+            .subject-list {
+                grid-template-columns: 1fr;
+            }
+            
+            .week-summary {
+                flex-direction: column;
+            }
+            
+            .subject-percentage-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Attendance Tracker</h1>
+            <p class="page-description" id="page-description">Track your attendance easily</p>
+        </header>
+        
+        <nav>
+            <button class="nav-btn active" data-page="home">Home</button>
+            <button class="nav-btn" data-page="weekly">Weekly</button>
+            <button class="nav-btn" data-page="attendance">Mark Attendance</button>
+            <button class="nav-btn" data-page="monthly">Monthly</button>
+        </nav>
+        
+        <!-- Home Page -->
+        <div class="page active" id="home">
+            <div class="welcome-text">Hi! Welcome to Your Dashboard</div>
+            <p class="description">Track your attendance weekly, monthly, and calculate your attendance percentage with our easy-to-use tool.</p>
+            
+            <div class="features">
+                <div class="feature">
+                    <i>📅</i>
+                    <h3>Weekly View</h3>
+                    <p>Track your attendance on a weekly basis with an easy-to-use interface.</p>
+                </div>
+                <div class="feature">
+                    <i>📝</i>
+                    <h3>Mark Attendance</h3>
+                    <p>Easily mark attendance for each subject on a dedicated page.</p>
+                </div>
+                <div class="feature">
+                    <i>📊</i>
+                    <h3>Subject-wise Reports</h3>
+                    <p>View attendance percentage for each subject individually.</p>
+                </div>
+            </div>
+            
+            <button class="action-btn" onclick="showPage('weekly')">Get Started</button>
+        </div>
+        
+        <!-- Weekly Page -->
+        <div class="page" id="weekly">
+            <h2>Weekly Subjects Management</h2>
+            
+            <div class="week-selector">
+                <button class="week-btn active" data-week="1">Week 1</button>
+                <button class="week-btn" data-week="2">Week 2</button>
+                <button class="week-btn" data-week="3">Week 3</button>
+                <button class="week-btn" data-week="4">Week 4</button>
+            </div>
+            
+            <h3>Manage Subjects for <span id="current-week">Week 1</span></h3>
+            
+            <div class="day-management">
+                <!-- Tuesday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Tuesday</h3>
+                        <button class="toggle-day" data-day="tuesday">Show/Hide</button>
+                    </div>
+                    <div class="day-content" id="tuesday-content">
+                        <div class="add-subject-form">
+                            <input type="text" id="tuesday-subject" placeholder="Enter subject name">
+                            <button class="add-btn" data-day="tuesday">Add Subject</button>
+                        </div>
+                        <div class="subject-list" id="tuesday-subjects">
+                            <div class="info-message">
+                                <p>No subjects added for Tuesday yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wednesday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Wednesday</h3>
+                        <button class="toggle-day" data-day="wednesday">Show/Hide</button>
+                    </div>
+                    <div class="day-content" id="wednesday-content">
+                        <div class="add-subject-form">
+                            <input type="text" id="wednesday-subject" placeholder="Enter subject name">
+                            <button class="add-btn" data-day="wednesday">Add Subject</button>
+                        </div>
+                        <div class="subject-list" id="wednesday-subjects">
+                            <div class="info-message">
+                                <p>No subjects added for Wednesday yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thursday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Thursday</h3>
+                        <button class="toggle-day" data-day="thursday">Show/Hide</button>
+                    </div>
+                    <div class="day-content" id="thursday-content">
+                        <div class="add-subject-form">
+                            <input type="text" id="thursday-subject" placeholder="Enter subject name">
+                            <button class="add-btn" data-day="thursday">Add Subject</button>
+                        </div>
+                        <div class="subject-list" id="thursday-subjects">
+                            <div class="info-message">
+                                <p>No subjects added for Thursday yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Friday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Friday</h3>
+                        <button class="toggle-day" data-day="friday">Show/Hide</button>
+                    </div>
+                    <div class="day-content" id="friday-content">
+                        <div class="add-subject-form">
+                            <input type="text" id="friday-subject" placeholder="Enter subject name">
+                            <button class="add-btn" data-day="friday">Add Subject</button>
+                        </div>
+                        <div class="subject-list" id="friday-subjects">
+                            <div class="info-message">
+                                <p>No subjects added for Friday yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Saturday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Saturday</h3>
+                        <button class="toggle-day" data-day="saturday">Show/Hide</button>
+                    </div>
+                    <div class="day-content" id="saturday-content">
+                        <div class="add-subject-form">
+                            <input type="text" id="saturday-subject" placeholder="Enter subject name">
+                            <button class="add-btn" data-day="saturday">Add Subject</button>
+                        </div>
+                        <div class="subject-list" id="saturday-subjects">
+                            <div class="info-message">
+                                <p>No subjects added for Saturday yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            
+            
+            <button class="action-btn" onclick="showPage('attendance')">Mark Attendance</button>
+            <button class="action-btn" id="calculate-subject-percentages">Calculate Subject Percentages</button>
+            
+            <div class="result-container" id="subject-percentage-result">
+                <h3>Subject-wise Attendance Percentage</h3>
+                <div class="subject-percentage-grid" id="subject-percentage-grid">
+                    <!-- Subject percentage cards will be inserted here -->
+                </div>
+            </div>
+            <button class="action-btn" onclick="showPage('monthly')">View Monthly Report</button>
+        </div>
+        
+        <!-- Attendance Page -->
+        <div class="page" id="attendance">
+            <h2>Mark Your Attendance</h2>
+            
+            <div class="week-selector">
+                <button class="week-btn active" data-week-attendance="1">Week 1</button>
+                <button class="week-btn" data-week-attendance="2">Week 2</button>
+                <button class="week-btn" data-week-attendance="3">Week 3</button>
+                <button class="week-btn" data-week-attendance="4">Week 4</button>
+            </div>
+            
+            <h3>Mark Attendance for <span id="current-week-attendance">Week 1</span></h3>
+            
+            <div class="day-management">
+                <!-- Tuesday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Tuesday</h3>
+                    </div>
+                    <div class="attendance-checkboxes" id="tuesday-attendance">
+                        <div class="info-message">
+                            <p>No subjects added for Tuesday yet.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Wednesday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Wednesday</h3>
+                    </div>
+                    <div class="attendance-checkboxes" id="wednesday-attendance">
+                        <div class="info-message">
+                            <p>No subjects added for Wednesday yet.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Thursday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Thursday</h3>
+                    </div>
+                    <div class="attendance-checkboxes" id="thursday-attendance">
+                        <div class="info-message">
+                            <p>No subjects added for Thursday yet.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Friday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Friday</h3>
+                    </div>
+                    <div class="attendance-checkboxes" id="friday-attendance">
+                        <div class="info-message">
+                            <p>No subjects added for Friday yet.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Saturday -->
+                <div class="day-section">
+                    <div class="day-title">
+                        <h3>Saturday</h3>
+                    </div>
+                    <div class="attendance-checkboxes" id="saturday-attendance">
+                        <div class="info-message">
+                            <p>No subjects added for Saturday yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <button class="action-btn" id="save-attendance">Save Attendance</button>
+            
+            <div class="info-message" id="attendance-saved-message" style="display: none;">
+                <p>Attendance saved successfully!</p>
+            </div>
+            
+            <button class="action-btn" onclick="showPage('weekly')">Back to Weekly View</button>
+        </div>
+        
+        <!-- Monthly Page -->
+        <div class="page" id="monthly">
+            <h2>Monthly Attendance Report</h2>
+            <p>Your attendance summary across all four weeks</p>
+            
+            <div class="summary">
+                <h3>Subject-wise Monthly Attendance</h3>
+                <div class="subject-percentage-grid" id="monthly-subject-percentages">
+                    <div class="info-message">
+                        <p>Mark attendance to see monthly subject percentages.</p>
+                    </div>
+                </div>
+                
+                <div class="week-summary">
+                    <div class="week-card">
+                        <h3>Week 1</h3>
+                        <div class="percentage" id="week1-percentage">0%</div>
+                        <p>Not calculated yet</p>
+                    </div>
+                    <div class="week-card">
+                        <h3>Week 2</h3>
+                        <div class="percentage" id="week2-percentage">0%</div>
+                        <p>Not calculated yet</p>
+                    </div>
+                    <div class="week-card">
+                        <h3>Week 3</h3>
+                        <div class="percentage" id="week3-percentage">0%</div>
+                        <p>Not calculated yet</p>
+                    </div>
+                    <div class="week-card">
+                        <h3>Week 4</h3>
+                        <div class="percentage" id="week4-percentage">0%</div>
+                        <p>Not calculated yet</p>
+                    </div>
+                </div>
+                
+                <button class="action-btn" id="calculate-monthly">Calculate Monthly Average</button>
+                
+                <div class="monthly-result" id="monthly-result">
+                    <h3>Monthly Average Attendance</h3>
+                    <div class="percentage" id="monthly-percentage">0%</div>
+                    <p>Based on all four weeks</p>
+                </div>
+            </div>
+            
+            <button class="action-btn" onclick="showPage('weekly')">Back to Weekly View</button>
+        </div>
+    </div>
+
+    <script>
+        // Store subjects and attendance data
+        let weeklyData = {
+            week1: { 
+                tuesday: { subjects: [], attendance: {} },
+                wednesday: { subjects: [], attendance: {} },
+                thursday: { subjects: [], attendance: {} },
+                friday: { subjects: [], attendance: {} },
+                saturday: { subjects: [], attendance: {} }
+            },
+            week2: { 
+                tuesday: { subjects: [], attendance: {} },
+                wednesday: { subjects: [], attendance: {} },
+                thursday: { subjects: [], attendance: {} },
+                friday: { subjects: [], attendance: {} },
+                saturday: { subjects: [], attendance: {} }
+            },
+            week3: { 
+                tuesday: { subjects: [], attendance: {} },
+                wednesday: { subjects: [], attendance: {} },
+                thursday: { subjects: [], attendance: {} },
+                friday: { subjects: [], attendance: {} },
+                saturday: { subjects: [], attendance: {} }
+            },
+            week4: { 
+                tuesday: { subjects: [], attendance: {} },
+                wednesday: { subjects: [], attendance: {} },
+                thursday: { subjects: [], attendance: {} },
+                friday: { subjects: [], attendance: {} },
+                saturday: { subjects: [], attendance: {} }
+            }
+        };
+        
+        // Track subject attendance across all weeks
+        let subjectAttendance = {};
+        
+        let currentWeek = 1;
+        let currentWeekAttendance = 1;
+        
+        // Load data from localStorage
+        function loadData() {
+            const savedData = localStorage.getItem('attendanceData');
+            if (savedData) {
+                weeklyData = JSON.parse(savedData);
+            }
+            
+            const savedSubjectData = localStorage.getItem('subjectAttendance');
+            if (savedSubjectData) {
+                subjectAttendance = JSON.parse(savedSubjectData);
+            }
+        }
+        
+        // Save data to localStorage
+        function saveData() {
+            localStorage.setItem('attendanceData', JSON.stringify(weeklyData));
+            localStorage.setItem('subjectAttendance', JSON.stringify(subjectAttendance));
+        }
+        
+        // Initialize the app
+        function initApp() {
+            loadData();
+            
+            // Set up nav buttons
+            document.querySelectorAll('.nav-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    showPage(this.getAttribute('data-page'));
+                });
+            });
+            
+            // Week selection functionality for weekly page
+            document.querySelectorAll('.week-btn[data-week]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    document.querySelectorAll('.week-btn[data-week]').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update current week
+                    currentWeek = parseInt(this.getAttribute('data-week'));
+                    document.getElementById('current-week').textContent = `Week ${currentWeek}`;
+                    
+                    // Render subjects for selected week
+                    renderAllDaySubjects();
+                });
+            });
+            
+            // Week selection functionality for attendance page
+            document.querySelectorAll('.week-btn[data-week-attendance]').forEach(button => {
+                button.addEventListener('click', function() {
+                    // Update active button
+                    document.querySelectorAll('.week-btn[data-week-attendance]').forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Update current week
+                    currentWeekAttendance = parseInt(this.getAttribute('data-week-attendance'));
+                    document.getElementById('current-week-attendance').textContent = `Week ${currentWeekAttendance}`;
+                    
+                    // Render attendance form for selected week
+                    renderAttendancePage();
+                });
+            });
+            
+            // Toggle day content
+            document.querySelectorAll('.toggle-day').forEach(button => {
+                button.addEventListener('click', function() {
+                    const day = this.getAttribute('data-day');
+                    const content = document.getElementById(`${day}-content`);
+                    if (content.style.display === 'none') {
+                        content.style.display = 'block';
+                        this.textContent = 'Hide';
+                    } else {
+                        content.style.display = 'none';
+                        this.textContent = 'Show';
+                    }
+                });
+            });
+            
+            // Add subject functionality for each day
+            document.querySelectorAll('.add-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const day = this.getAttribute('data-day');
+                    const subjectInput = document.getElementById(`${day}-subject`);
+                    const subjectName = subjectInput.value.trim();
+                    
+                    if (subjectName) {
+                        // Add subject to all weeks for this day
+                        for (let week = 1; week <= 4; week++) {
+                            if (!weeklyData[`week${week}`][day].subjects.includes(subjectName)) {
+                                weeklyData[`week${week}`][day].subjects.push(subjectName);
+                                weeklyData[`week${week}`][day].attendance[subjectName] = false;
+                            }
+                        }
+                        
+                        // Initialize subject attendance tracking if not exists
+                        if (!subjectAttendance[subjectName]) {
+                            subjectAttendance[subjectName] = {
+                                total: 0,
+                                attended: 0
+                            };
+                        }
+                        
+                        // Clear input
+                        subjectInput.value = '';
+                        
+                        // Render updated subjects
+                        renderAllDaySubjects();
+                        
+                        // Save data
+                        saveData();
+                    }
+                });
+            });
+            
+            // Save attendance data
+            document.getElementById('save-attendance').addEventListener('click', function() {
+                // Update subject attendance tracking
+                const days = ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                
+                days.forEach(day => {
+                    const subjects = weeklyData[`week${currentWeekAttendance}`][day].subjects;
+                    const attendance = weeklyData[`week${currentWeekAttendance}`][day].attendance;
+                    
+                    subjects.forEach(subject => {
+                        if (!subjectAttendance[subject]) {
+                            subjectAttendance[subject] = {
+                                total: 0,
+                                attended: 0
+                            };
+                        }
+                        
+                        // For this implementation, we're counting each class occurrence
+                        subjectAttendance[subject].total += 1;
+                        if (attendance[subject]) {
+                            subjectAttendance[subject].attended += 1;
+                        }
+                    });
+                });
+                
+                // Show success message
+                const messageEl = document.getElementById('attendance-saved-message');
+                messageEl.style.display = 'block';
+                setTimeout(() => {
+                    messageEl.style.display = 'none';
+                }, 3000);
+                
+                // Save data
+                saveData();
+            });
+            
+            // Calculate subject percentages
+            document.getElementById('calculate-subject-percentages').addEventListener('click', function() {
+                calculateSubjectPercentages('subject-percentage-grid');
+            });
+            
+            // Calculate monthly average
+            document.getElementById('calculate-monthly').addEventListener('click', function() {
+                calculateMonthlyAverage();
+                calculateSubjectPercentages('monthly-subject-percentages');
+            });
+            
+            // Initial render
+            renderAllDaySubjects();
+        }
+        
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-page') === pageId) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Update page description
+            const descriptions = {
+                home: "Track your attendance easily",
+                weekly: "Weekly subjects management",
+                attendance: "Mark your attendance",
+                monthly: "Monthly attendance report"
+            };
+            document.getElementById('page-description').textContent = descriptions[pageId];
+            
+            // If weekly page is shown, render subjects
+            if (pageId === 'weekly') {
+                renderAllDaySubjects();
+            }
+            
+            // If attendance page is shown, render attendance form
+            if (pageId === 'attendance') {
+                renderAttendancePage();
+            }
+            
+            // If monthly page is shown, calculate percentages
+            if (pageId === 'monthly') {
+                calculateSubjectPercentages('monthly-subject-percentages');
+            }
+        }
+        
+        // Render subjects for a specific day
+        function renderDaySubjects(day) {
+            const subjectListEl = document.getElementById(`${day}-subjects`);
+            const subjects = weeklyData[`week${currentWeek}`][day].subjects;
+            
+            if (subjects.length === 0) {
+                subjectListEl.innerHTML = `
+                    <div class="info-message">
+                        <p>No subjects added for ${capitalizeFirstLetter(day)} yet.</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            let html = '';
+            subjects.forEach((subject, index) => {
+                html += `
+                    <div class="subject-item">
+                        <div class="subject-info">
+                            <input type="checkbox" id="subject-${day}-${index}" disabled checked>
+                            <label for="subject-${day}-${index}">${subject}</label>
+                        </div>
+                        <button class="delete-btn" data-day="${day}" data-subject="${subject}">Delete</button>
+                    </div>
+                `;
+            });
+            
+            subjectListEl.innerHTML = html;
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.delete-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const day = this.getAttribute('data-day');
+                    const subject = this.getAttribute('data-subject');
+                    deleteSubject(day, subject);
+                });
+            });
+        }
+        
+        // Render subjects for all days
+        function renderAllDaySubjects() {
+            const days = ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            days.forEach(day => {
+                renderDaySubjects(day);
+            });
+        }
+        
+        // Render attendance page
+        function renderAttendancePage() {
+            const days = ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+            
+            days.forEach(day => {
+                const attendanceEl = document.getElementById(`${day}-attendance`);
+                const subjects = weeklyData[`week${currentWeekAttendance}`][day].subjects;
+                
+                if (subjects.length === 0) {
+                    attendanceEl.innerHTML = `
+                        <div class="info-message">
+                            <p>No subjects added for ${capitalizeFirstLetter(day)} yet.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                let html = '';
+                subjects.forEach((subject, index) => {
+                    const isChecked = weeklyData[`week${currentWeekAttendance}`][day].attendance[subject] ? 'checked' : '';
+                    html += `
+                        <div class="attendance-subject">
+                            <input type="checkbox" id="attendance-${day}-${subject}" 
+                                data-day="${day}" data-subject="${subject}" ${isChecked}>
+                            <label for="attendance-${day}-${subject}">${subject}</label>
+                        </div>
+                    `;
+                });
+                
+                attendanceEl.innerHTML = html;
+                
+                // Add event listeners to attendance checkboxes
+                document.querySelectorAll('.attendance-subject input').forEach(checkbox => {
+                    checkbox.addEventListener('change', function() {
+                        const day = this.getAttribute('data-day');
+                        const subject = this.getAttribute('data-subject');
+                        weeklyData[`week${currentWeekAttendance}`][day].attendance[subject] = this.checked;
+                        
+                        // Save data
+                        saveData();
+                    });
+                });
+            });
+        }
+        
+        // Capitalize first letter
+        function capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        // Delete subject
+        function deleteSubject(day, subject) {
+            // Remove subject from all weeks
+            for (let week = 1; week <= 4; week++) {
+                const subjectIndex = weeklyData[`week${week}`][day].subjects.indexOf(subject);
+                if (subjectIndex !== -1) {
+                    weeklyData[`week${week}`][day].subjects.splice(subjectIndex, 1);
+                    delete weeklyData[`week${week}`][day].attendance[subject];
+                }
+            }
+            
+            // Remove from subject attendance tracking
+            if (subjectAttendance[subject]) {
+                delete subjectAttendance[subject];
+            }
+            
+            // Render updated subjects
+            renderAllDaySubjects();
+            
+            // Save data
+            saveData();
+        }
+        
+        // Calculate subject percentages
+        function calculateSubjectPercentages(containerId) {
+            const subjectGrid = document.getElementById(containerId);
+            subjectGrid.innerHTML = '';
+            
+            let hasSubjects = false;
+            
+            for (const subject in subjectAttendance) {
+                hasSubjects = true;
+                const data = subjectAttendance[subject];
+                let percentage = 0;
+                
+                if (data.total > 0) {
+                    percentage = Math.round((data.attended / data.total) * 100);
+                }
+                
+                subjectGrid.innerHTML += `
+                    <div class="subject-percentage-card">
+                        <h4>${subject}</h4>
+                        <div class="subject-percentage">${percentage}%</div>
+                        <div class="subject-stats">Attended: ${data.attended}/${data.total}</div>
+                    </div>
+                `;
+            }
+            
+            if (!hasSubjects) {
+                subjectGrid.innerHTML = `
+                    <div class="info-message">
+                        <p>No attendance data available. Mark attendance first.</p>
+                    </div>
+                `;
+            }
+            
+            if (containerId === 'subject-percentage-grid') {
+                document.getElementById('subject-percentage-result').classList.add('show');
+            }
+        }
+        
+        // Calculate monthly average
+        function calculateMonthlyAverage() {
+            let totalPercentage = 0;
+            let weeksWithData = 0;
+            
+            for (let week = 1; week <= 4; week++) {
+                const days = ['tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+                
+                let weekTotalClasses = 0;
+                let weekAttendedClasses = 0;
+                
+                days.forEach(day => {
+                    const subjects = weeklyData[`week${week}`][day].subjects;
+                    const attendance = weeklyData[`week${week}`][day].attendance;
+                    
+                    weekTotalClasses += subjects.length;
+                    
+                    subjects.forEach(subject => {
+                        if (attendance[subject]) {
+                            weekAttendedClasses++;
+                        }
+                    });
+                });
+                
+                if (weekTotalClasses > 0) {
+                    const weekPercentage = (weekAttendedClasses / weekTotalClasses) * 100;
+                    totalPercentage += weekPercentage;
+                    weeksWithData++;
+                    
+                    // Update week card
+                    document.getElementById(`week${week}-percentage`).textContent = `${Math.round(weekPercentage)}%`;
+                    document.getElementById(`week${week}-percentage`).nextElementSibling.textContent = 
+                        `Attended: ${weekAttendedClasses}/${weekTotalClasses}`;
+                }
+            }
+            
+            const monthlyAverage = weeksWithData > 0 ? Math.round(totalPercentage / weeksWithData) : 0;
+            
+            // Display monthly result
+            document.getElementById('monthly-percentage').textContent = `${monthlyAverage}%`;
+        }
+        
+        // Initialize the app when the page loads
+        document.addEventListener('DOMContentLoaded', initApp);
+    </script>
+</body>
+</html>
